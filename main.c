@@ -1,6 +1,6 @@
 #include <msp430.h> 
 #include "LCD.h"
-
+//Comment
 /*
  * main.c
  */

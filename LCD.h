@@ -15,7 +15,7 @@ void InitLCD();
 
 void ClrLCD();
 
-void WritetoLCD();
+void WritetoLCD(char*string);
 
 void CursorDown();
 

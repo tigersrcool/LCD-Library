@@ -6,6 +6,10 @@
  */
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+
+    InitSPI();
+    InitLCD();
+    ClrLCD();
 	
 	return 0;
 }

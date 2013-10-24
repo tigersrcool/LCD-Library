@@ -9,6 +9,18 @@
 
 #define RS_MASK 0x40
 
+int LCDCON=0;
+
+void writeCommandNibble(char commandNibble);
+void writeCommandByte(char commandByte);
+void LCD_write_8(char byteToSend);
+void SPI_send(char byteToSend);
+void LCD_write_4(char byteToSend);
+void delayMicro();
+void delayMilli();
+void set_SS_lo();
+void set_SS_hi();
+
 void InitSPI() {
 	UCB0CTL1 |= UCSWRST;
 	UCB0CTL0 |= UCCKPH|UCMSB|UCMST|UCSYNC;
@@ -20,7 +32,7 @@ void InitSPI() {
 	P1SEL2 |= BIT6;
 	P1SEL |= BIT7;
 	P1SEL2 |= BIT7;
-	UCB0CTL1 |= UCSWRST;
+	UCB0CTL1 &= ~UCSWRST;
 }
 
 void InitLCD() {
@@ -82,7 +94,7 @@ void SPI_send(char byteToSend){
     set_SS_hi();
 }
 
-void LCD_Write_4(char byteToSend){
+void LCD_write_4(char byteToSend){
 	unsigned char sendByte = byteToSend;
 	sendByte &= 0xF0;
 	sendByte |= LCDCON;
@@ -90,10 +102,14 @@ void LCD_Write_4(char byteToSend){
 	SPI_send(sendByte);
 	delayMicro();
 	sendByte |= 0x80;
-
+	SPI_send(sendByte);
+	delayMicro();
+	sendByte &= 0x7F;
+	SPI_Send(sendByte);
+	delayMicro();
 }
 
-void WritetoLCD() {
+void WritetoLCD(char*StringtoWrite){
 
 }
 
@@ -124,5 +140,5 @@ void set_SS_lo(){
 
 void set_SS_hi(){
 	P1DIR |= BIT0;
-	P1OUT &= ~BIT0;
+	P1OUT |= BIT0;
 }

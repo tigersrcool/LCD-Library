@@ -20,6 +20,8 @@ void delayMicro();
 void delayMilli();
 void set_SS_lo();
 void set_SS_hi();
+void Writemessage(char message[], char messagelength);
+void Writeletter(char asciiChar);
 
 void InitSPI() {
 	UCB0CTL1 |= UCSWRST;
@@ -96,7 +98,7 @@ void SPI_send(char byteToSend){
 
 void LCD_write_4(char byteToSend){
 	unsigned char sendByte = byteToSend;
-	sendByte &= 0xF0;
+	sendByte &= 0x0F;
 	sendByte |= LCDCON;
 	sendByte &= 0x7F;
 	SPI_send(sendByte);
@@ -109,20 +111,38 @@ void LCD_write_4(char byteToSend){
 	delayMicro();
 }
 
-void WritetoLCD(char*StringtoWrite){
+void Writeletter(char asciiChar){
+	writeDataByte(asciiChar);
+}
 
+void Writemessage(char message[], char messagelength){
+	volatile int i;
+	for(i = 0; i < messagelength; i++){
+		Writeletter(message[i]);
+	}
 }
 
 void CursorDown() {
 	writeCommandByte(0xC0);
+	LCDCON |= RS_MASK;
+	delayMilli();
 }
 
 void CursorUp() {
-	writeCommandByte(0xC0);
+	writeCommandByte(0x00);
+	LCDCON |= RS_MASK;
+	delayMilli();
 }
 
-void Scroll() {
+void Scroll(char message[], char messagelength) {
+	volatile int i;
+	int point;
+	point = message[0];
 
+	for(i=0; i<messagelength; i++){
+		message[i]= message[i+1];
+	}
+	message[messagelength-1] = point;
 }
 
 void delayMicro(){

@@ -15,12 +15,14 @@ void InitLCD();
 
 void ClrLCD();
 
+void Writeletter(char asciiChar);
+
 void WritetoLCD(char*string);
 
 void CursorDown();
 
 void CursorUp();
 
-void Scroll();
+void Scroll(char message[], char messagelength);
 
 #endif /* LCD_H_ */
